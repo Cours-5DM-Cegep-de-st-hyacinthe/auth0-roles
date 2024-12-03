@@ -4,20 +4,20 @@ const AuthenticationClient = require('auth0').AuthenticationClient;
 
 exports.onExecutePostLogin = async (event, api) => {
   // !ATTENTION! ---- Changez le DOMAIN pour votre adresse Auth0 ---- !ATTENTION!
-  const DOMAIN = 'dev-t2ru3diusrdscg80.us.auth0.com';
+  const DOMAIN = 'dev-t2ru3diusrdscg75.us.auth0.com';
   const auth0 = new AuthenticationClient({
     domain: DOMAIN,
     clientId: event.secrets.M2M_CLIENT_ID,
-    clientSecret: event.secrets.M2M_CLIENT_SECRET
+    clientSecret: event.secrets.M2M_CLIENT_SECRET,
   });
   const response = await auth0.clientCredentialsGrant({
-    audience: `https://${DOMAIN}/api/v2`,
-    scope: 'read:users update:users read:roles'
+    audience: `https://${DOMAIN}/api/v2/`,
+    scope: 'read:users update:users read:roles',
   });
   const API_TOKEN = response.access_token;
   const management = new ManagementClient({
     domain: DOMAIN,
-    token: API_TOKEN
+    token: API_TOKEN,
   });
 
   const params = { id: event.user.user_id };
@@ -28,6 +28,6 @@ exports.onExecutePostLogin = async (event, api) => {
   const namespace = 'monApp';
   if (event.authorization) {
     api.idToken.setCustomClaim(`${namespace}/roles`, roles);
-    api.accessToken.SetCustomClaim(`${namespace}/roles`, roles);
+    api.accessToken.setCustomClaim(`${namespace}/roles`, roles);
   }
 };
